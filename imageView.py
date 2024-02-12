@@ -12,7 +12,6 @@ from PyQt6.QtCore import Qt,QSize
 from PyQt6.QtGui import QIcon,QIntValidator,QFont,QPixmap
 PhotoPath1 = r"D:\3sept23"
 
-
 class Window(QWidget):
 
     def __init__(self):
@@ -81,12 +80,19 @@ class Window(QWidget):
 
         self.pic1Label = QLabel(self)
         self.pic1Label.setFixedSize(800,950)
-        layout2.addWidget(self.pic1Label)
+        layout2.addWidget(self.pic1Label, Qt.AlignmentFlag.AlignLeft)
+        layout2.addStretch()
+
+
+        layoutScene = QVBoxLayout(self)
+        layout2.addLayout(layoutScene)
 
         self.pic2Label = QLabel(self)
         self.pic2Label.setFixedSize(600, 600)
-        layout2.addWidget(self.pic2Label)
-        # layout2.addStretch()
+        layoutScene.addWidget(self.pic2Label,Qt.AlignmentFlag.AlignLeft)
+        layoutScene.addStretch()
+
+
 
         self.showImageDefault()
 
@@ -103,7 +109,6 @@ class Window(QWidget):
         pixmap = QPixmap(self.imageList1[self.currentImage-1])
         self.pic1Label.setPixmap(pixmap.scaled(800, 950))
         self.pic2Label.setPixmap(pixmap.scaled(600, 900))
-
 
     def getImageList(self):
         self.imageList1 =[]
