@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (QApplication,
                              QGridLayout)
 from PyQt6.QtCore import Qt,QSize
 from PyQt6.QtGui import QIcon,QIntValidator,QFont,QPixmap
-PhotoPath1 = r"C:\Users\nitin\Downloads\DriveDownload"
+PhotoPath1 = r"D:\3sept23"
 
 
 class Window(QWidget):
@@ -34,30 +34,35 @@ class Window(QWidget):
         layoutMain.addLayout(layout1)
         layoutMain.addLayout(layout2)
 
-
         self.label1 = QLabel("Image")
         layout1.addWidget(self.label1)
+
+        self.label0 = QLabel()
+        self.label0.setAlignment(Qt.AlignmentFlag.AlignRight)
+        layout1.addWidget(self.label0,10)
 
         self.firstImage= 1
         self.currentImage = self.firstImage
         self.lastImage= len(self.imageList1)
-
 
         ValidInt = QIntValidator(self.firstImage,self.lastImage,self)
         self.input1 = QLineEdit(self)
         self.input1.setValidator(ValidInt)
         self.input1.setText(str(self.currentImage))
         self.input1.returnPressed.connect(self.goToImagef)
+        self.input1.setFixedSize(30,20)
         # self.input1.textChanged.connect(self.goToImage)
         layout1.addWidget(self.input1)
 
-        self.currentLabel = QLabel(self)
+
+        self.currentLabel = QLabel()
         self.currentLabel.setNum(self.currentImage)
 
         self.slash = QLabel(" / ")
 
         self.lastLabel = QLabel(self)
         self.lastLabel.setNum(self.lastImage)
+
         # self.imageNum = QLabel("we")
         layout1.addWidget(self.currentLabel)
         layout1.addWidget(self.slash)
@@ -73,8 +78,6 @@ class Window(QWidget):
         nextButton.clicked.connect(self.nextImagef)
         # nextButton.setStyleSheet("background-color: black")
         layout1.addWidget(nextButton)
-
-
 
         self.pic1Label = QLabel(self)
         self.pic1Label.setFixedSize(800,950)
