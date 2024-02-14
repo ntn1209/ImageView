@@ -1,63 +1,85 @@
 import sys
 import os
-from PyQt6.QtWidgets import (QApplication,
-                             QWidget,
-                             QPushButton,
-                             QLabel,
-                             QLineEdit,
-                             QVBoxLayout,
-                             QHBoxLayout,
-                             QGridLayout)
-from PyQt6.QtCore import Qt,QSize
-from PyQt6.QtGui import QIcon,QIntValidator,QFont,QPixmap
-PhotoPath1 = r"C:\Users\nitin\Downloads\DriveDownload"
+try:
+    from PyQt6.QtWidgets import (QApplication,
+                                 QWidget,
+                                 QPushButton,
+                                 QLabel,
+                                 QLineEdit,
+                                 QVBoxLayout,
+                                 QHBoxLayout,
+                                 QGridLayout,QDesktopWidget)
+    from PyQt6.QtCore import Qt,QSize
+    from PyQt6.QtGui import QIcon,QIntValidator,QFont,QPixmap
+except:
+    from PyQt5.QtWidgets import (QApplication,
+                                 QWidget,
+                                 QPushButton,
+                                 QLabel,
+                                 QLineEdit,
+                                 QVBoxLayout,
+                                 QHBoxLayout,
+                                 QGridLayout,QDesktopWidget)
+    from PyQt5.QtCore import Qt,QSize
+    from PyQt5.QtGui import QIcon,QIntValidator,QFont,QPixmap
 
+PhotoPath1 = r"D:\3sept23"
 
 class Window(QWidget):
 
     def __init__(self):
         super().__init__()
         self.showMaximized()
-        # self.showFullScreen() never use
+        # self.showFullScreen() #never use
         self.setWindowIcon(QIcon("icon.jpg"))
         self.setWindowTitle("ImageView")
         self.getImageList()
         # print(self.imageList1)
+        sizeObject = QDesktopWidget().screenGeometry(-1)
+        print(" Screen size : " + str(sizeObject.height()) + "x" + str(sizeObject.width()))
 
         layoutMain = QVBoxLayout()
         layoutMain.setSpacing(10)
         self.setLayout(layoutMain)
-
+        print(self.width() , self.height())
         layout1 = QHBoxLayout()
-        layout2 = QHBoxLayout()
+        if sizeObject.width() >= sizeObject.height():  #convert to flag
+            layout2 = QHBoxLayout(self)
+        else:
+            layout2 = QVBoxLayout(self)
 
         layoutMain.addLayout(layout1)
         layoutMain.addLayout(layout2)
 
-
         self.label1 = QLabel("Image")
         layout1.addWidget(self.label1)
+
+        self.label0 = QLabel()
+        self.label0.setAlignment(Qt.AlignmentFlag.AlignRight)
+        layout1.addWidget(self.label0,10)
 
         self.firstImage= 1
         self.currentImage = self.firstImage
         self.lastImage= len(self.imageList1)
-
 
         ValidInt = QIntValidator(self.firstImage,self.lastImage,self)
         self.input1 = QLineEdit(self)
         self.input1.setValidator(ValidInt)
         self.input1.setText(str(self.currentImage))
         self.input1.returnPressed.connect(self.goToImagef)
+        self.input1.setFixedSize(30,20)
         # self.input1.textChanged.connect(self.goToImage)
         layout1.addWidget(self.input1)
 
-        self.currentLabel = QLabel(self)
+
+        self.currentLabel = QLabel()
         self.currentLabel.setNum(self.currentImage)
 
         self.slash = QLabel(" / ")
 
         self.lastLabel = QLabel(self)
         self.lastLabel.setNum(self.lastImage)
+
         # self.imageNum = QLabel("we")
         layout1.addWidget(self.currentLabel)
         layout1.addWidget(self.slash)
@@ -75,20 +97,37 @@ class Window(QWidget):
         layout1.addWidget(nextButton)
 
 
-
+        layoutPic1 = QVBoxLayout(self)
+        self.pic1Name = QLabel(self)
+        self.pic1Name.setText("Image1")
+        self.pic1Name.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.pic1Label = QLabel(self)
-        self.pic1Label.setFixedSize(800,950)
-        layout2.addWidget(self.pic1Label)
+        self.pic1Label.setFixedSize(800,900)
+        layoutPic1.addWidget(self.pic1Name, Qt.AlignmentFlag.AlignRight)
+        layoutPic1.addWidget(self.pic1Label, Qt.AlignmentFlag.AlignLeft)
+        layoutPic1.addStretch(0)
 
+        layoutPic2 = QVBoxLayout(self)
+
+        self.pic2Name = QLabel(self)
+        self.pic2Name.setText("Image2")
+        self.pic2Name.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.pic2Label = QLabel(self)
         self.pic2Label.setFixedSize(600, 600)
-        layout2.addWidget(self.pic2Label)
-        # layout2.addStretch()
+        self.pic2Bottom = QLabel(self)
+        self.pic2Bottom.setFixedHeight(300)
+        layoutPic2.addWidget(self.pic2Name,Qt.AlignmentFlag.AlignRight)
+        layoutPic2.addWidget(self.pic2Label,Qt.AlignmentFlag.AlignRight)
+        layoutPic2.addWidget(self.pic2Bottom,Qt.AlignmentFlag.AlignRight)
+        layoutPic2.setAlignment(Qt.AlignmentFlag.AlignRight)
+        # layoutPic2.addStretch(0)
+
+        layout2.addLayout(layoutPic1)
+        layout2.addLayout(layoutPic2)
 
         self.showImageDefault()
 
-
-
+        
 
     def showImageDefault(self):
         self.showImageName()
@@ -101,7 +140,6 @@ class Window(QWidget):
         self.pic1Label.setPixmap(pixmap.scaled(800, 950))
         self.pic2Label.setPixmap(pixmap.scaled(600, 900))
 
-
     def getImageList(self):
         self.imageList1 =[]
         for file in os.listdir(PhotoPath1):
@@ -111,7 +149,8 @@ class Window(QWidget):
     def showImageName(self):
         imgName = self.imageList1[self.currentImage-1].split("\\")[-1]
         print(imgName)
-        self.label1.setText(imgName)
+        self.pic1Name.setText(imgName)
+        self.pic2Name.setText(imgName)
 
     def nextImagef(self):
         if self.currentImage >= self.lastImage or self.currentImage <=0:
